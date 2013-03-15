@@ -120,7 +120,6 @@ class window.DomTextMatcher
     @dmp.setCaseSensitive caseSensitive
     @search @dmp, pattern, pos, path, options
 
-
   # Do some normalization to get a "canonical" form of a string.
   # Used to even out some browser differences.  
   normalizeString: (string) -> string.replace /\s{2,}/g, " "
@@ -234,6 +233,8 @@ class window.DomTextMatcher
     pattern = pattern.trim()
     unless pattern? then throw new Error "Can't search an for empty pattern!"
 
+    fuzzyComparison = options.withFuzzyComparison ? false
+
     # Do some preparation, if required
     t0 = @timestamp()
     if path? then @scan()
@@ -254,7 +255,7 @@ class window.DomTextMatcher
     matches = []
     for textMatch in textMatches
       do (textMatch) =>
-        analysis = @analyzeMatch pattern, textMatch
+        analysis = @analyzeMatch pattern, textMatch, fuzzyComparison
         mappings = @mapper.getMappingsForCharRange textMatch.start, textMatch.end
         match = $.extend {}, textMatch, analysis, mappings
         matches.push match
