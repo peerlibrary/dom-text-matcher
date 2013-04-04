@@ -34,13 +34,14 @@ class window.DomTextMatcher
 
   # The available paths which can be searched
   #
-  # An map is returned, where the keys are the paths, and the values hold
+  # A map is returned, where the keys are the paths, and the values hold
   # the collected informatino about the given sub-trees of the DOM.
-  scan: ->
+  scan: (onProgress, onFinished) ->
     t0 = @timestamp()
-    data = @mapper.scan()
-    t1 = @timestamp()
-    return time: t1 - t0, data: data
+    @mapper.scan onProgress, (data) =>
+      t1 = @timestamp()
+      onFinished time: t1 - t0, data: data
+    null
 
   # Return the default path
   getDefaultPath: -> @mapper.getDefaultPath()
