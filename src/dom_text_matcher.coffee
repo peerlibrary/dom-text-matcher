@@ -27,7 +27,7 @@ class window.DomTextMatcher
   # This means that subsequent calls can not safely re-use previously cached
   # data structures, so some calculations will be necessary again.
   #
-  # The usage of this feature is not mandatorry; if not receiving change
+  # The usage of this feature is not mandatory; if not receiving change
   # notifications, the library will just assume that the document can change
   # anythime, and therefore will not assume any stability.
   documentChanged: -> @mapper.documentChanged()
@@ -37,6 +37,8 @@ class window.DomTextMatcher
   # A map is returned, where the keys are the paths, and the values hold
   # the collected informatino about the given sub-trees of the DOM.
   scan: (onProgress, onFinished) ->
+    unless onFinished?
+      throw new Error "Called scan() with no onFinished argument!"
     t0 = @timestamp()
     @mapper.scan onProgress, (data) =>
       t1 = @timestamp()
