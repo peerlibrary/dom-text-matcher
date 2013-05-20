@@ -50,7 +50,9 @@ class window.DomTextMatcher
   # if you want a JQuery deferred promise.
   scanPromise: ->
     dfd = new jQuery.Deferred()
-    onProgress = (data) => dfd.notify data
+    onProgress = (data) => dfd.notify
+      text: "scanning..."
+      progress: data
     onFinished = (data) => dfd.resolve data
     @scanAsync onProgress, onFinished
     return dfd.promise()
