@@ -1,6 +1,7 @@
 # Naive text matcher 
 class window.DTM_ExactMatcher
-  constructor: ->
+  constructor: (log) ->
+    @log = log ? getXLogger "DMP exact matcher"
     @distinct = true
     @caseSensitive = false  
  
@@ -13,7 +14,7 @@ class window.DTM_ExactMatcher
       throw new Error "Called search with null text!"
     unless pattern?
       throw new Error "Called search with null pattern!"
-#    console.log "Searching for '" + pattern + "' in '" + text + "'."
+    @log.trace "Searching for '" + pattern + "' in '" + text + "'."
     pLen = pattern.length
     results = []
     index = 0
@@ -22,8 +23,8 @@ class window.DTM_ExactMatcher
       pattern = pattern.toLowerCase()
     while (i = text.indexOf pattern) > -1
       do =>
-#        console.log "Found '" + pattern + "' @ " + i +
-#            " (=" + (index + i) + ")"
+        @log.trace "Found '" + pattern + "' @ " + i +
+          " (=" + (index + i) + ")"
         results.push
           start: index + i
           end: index + i + pLen
@@ -37,7 +38,8 @@ class window.DTM_ExactMatcher
     results
 
 class window.DTM_RegexMatcher
-  constructor: ->
+  constructor: (log) ->
+    @log = log ? getXLogger "DMP regex matcher"
     @caseSensitive = false  
  
   setCaseSensitive: (value) -> @caseSensitive = value
@@ -52,10 +54,11 @@ class window.DTM_RegexMatcher
                 
 # diff-match-patch - based text matcher 
 class window.DTM_DMPMatcher
-  constructor: ->
-     @dmp = new diff_match_patch
-     @dmp.Diff_Timeout = 0
-     @caseSensitive = false
+  constructor: (log) ->
+    @log = log ? getXLogger "DMP fuzzy matcher"
+    @dmp = new diff_match_patch
+    @dmp.Diff_Timeout = 0
+    @caseSensitive = false
 
   _reverse: (text) -> text.split("").reverse().join ""
 
@@ -115,9 +118,8 @@ class window.DTM_DMPMatcher
       throw new Error "Called search with null text!"
     unless pattern?
       throw new Error "Called search with null pattern!"
-#    console.log "In dtm search. text: '" + text + "', pattern: '" + pattern +
-#       "', expectedStartLoc: " + expectedStartLoc + ", options:"
-#    console.log options
+    @log.trace "In dtm search. text: '" + text + "', pattern: '" + pattern +
+      "', expectedStartLoc: " + expectedStartLoc + ", options:", options
     if expectedStartLoc < 0 then throw new Error "Can't search at negative indices!"
 
     unless @caseSensitive
@@ -152,13 +154,13 @@ class window.DTM_DMPMatcher
 #                endError: endPos.data.error
 #                uncheckedMidSection: Math.max 0, matchLen - startLen - endLen
 #                lengthError: matchLen - pLen
-#          else
-#            console.log "Sorry, matchLen (" + matchLen + ") is not between " +
-#                0.5*pLen + " and " + 1.5*pLen
-#        else
-#          console.log "endSlice ('" + endSlice + "') not found"
-#      else
-#        console.log "startSlice ('" + startSlice + "') not found"
+          else
+            @log.trace "Sorry, matchLen (" + matchLen + ") is not between " +
+                0.5*pLen + " and " + 1.5*pLen
+        else
+          @log.trace "endSlice ('" + endSlice + "') not found"
+      else
+        @log.trace "startSlice ('" + startSlice + "') not found"
 
     unless result? then return []
 
@@ -190,8 +192,8 @@ class window.DTM_DMPMatcher
   # You don't need to call the functions below this point manually
 
   searchForSlice: (text, slice, expectedStartLoc) ->
-#    console.log "searchForSlice: '" + text + "', '" + slice + "', " +
-#        expectedStartLoc
+    @log.trace "searchForSlice: '" + text + "', '" + slice + "', " +
+        expectedStartLoc
 
     r1 = @dmp.match_main text, slice, expectedStartLoc
     startIndex = r1.index

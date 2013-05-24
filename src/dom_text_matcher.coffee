@@ -227,14 +227,15 @@ class window.DomTextMatcher
           match[k] = v
       return matches: [match]
 
-#    console.log "Rejecting the match, because error level is too high. (" +
-#        errorLevel + ")"
+    @log.debug "Rejecting the match, because error level is too high. (" +
+      errorLevel + ")"
     return matches: []
 
 
   # ===== Private methods (never call from outside the module) =======
 
-  constructor: (domTextMapper) ->
+  constructor: (domTextMapper, name = "matcher") ->
+    @log = getXLogger name
     @mapper = domTextMapper
 
   # Search for text with a custom matcher object
