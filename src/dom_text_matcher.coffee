@@ -235,7 +235,7 @@ class window.DomTextMatcher
   # ===== Private methods (never call from outside the module) =======
 
   constructor: (domTextMapper, name = "matcher") ->
-    @log = getXLogger name
+    @log = console
     @mapper = domTextMapper
 
   # Search for text with a custom matcher object

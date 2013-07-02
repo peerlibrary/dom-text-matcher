@@ -198,7 +198,7 @@
       if (name == null) {
         name = "matcher";
       }
-      this.log = getXLogger(name);
+      this.log = console;
       this.mapper = domTextMapper;
     }
 

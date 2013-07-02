@@ -1,0 +1,3 @@
+#!/bin/sh
+cd "$(dirname "$0")"
+watch -n1 "cp -u ../src/dom_text_matcher.js ../../annotator/lib/vendor/; cp -u ../src/text_match_engines.js ../../annotator/lib/vendor/"
