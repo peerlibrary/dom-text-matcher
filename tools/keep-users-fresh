@@ -1,5 +1,8 @@
 #!/bin/sh
-cd "$(dirname "$0")"
 # This file only makes sense if you have the annotator repository cloned
 # to the same directory where you keep dom-text-matcher.
-watch -n1 "cp -u -t ../../annotator/lib/vendor ../src/*.js ../src/*.map; cp -u -t ../../annotator/lib/src ../src/*.coffee"
+
+cd "$(dirname "$0")"
+rm -rf ../src/.annotator-map
+mkdir -p ../src/.annotator-map
+watch -n1 "for i in ../src/*.map;do sed \$i -e \"s/\.\./\./\" > ../src/.annotator-map/\`basename \$i\`;done; cp -u -t ../../annotator/lib/vendor ../src/*.js ../src/.annotator-map/*.map; cp -u -t ../../annotator/lib/vendor/src ../src/*.coffee"
