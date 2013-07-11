@@ -1,0 +1,6 @@
+#!/bin/sh
+# This file only makes sense if you have the h repository cloned
+# to the same directory where you keep dom-text-matcher.
+
+cd "$(dirname "$0")"
+watch -n1 "cp -u -t ../../h/h/lib ../src/*.coffee"
