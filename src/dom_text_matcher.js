@@ -91,7 +91,7 @@
     };
 
     DomTextMatcher.prototype.searchFuzzyWithContext = function(prefix, suffix, pattern, expectedStart, expectedEnd, caseSensitive, path, options) {
-      var analysis, charRange, expectedPrefixStart, expectedSuffixStart, k, len, mappings, match, matchThreshold, obj, patternLength, prefixEnd, prefixResult, remainingText, suffixResult, suffixStart, v, _i, _len, _ref, _ref1, _ref2, _ref3;
+      var a1, a2, analysis, bestError, candidate, charRange, expectedPrefixStart, expectedSuffixStart, flexMatch, flexMatches, flexRange, k, len, mappings, match, matchThreshold, obj, patternLength, prefixEnd, prefixError, prefixRange, prefixResult, prefixStart, remainingText, suffixEnd, suffixError, suffixRange, suffixResult, suffixStart, totalError, v, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3;
       if (expectedStart == null) {
         expectedStart = null;
       }
@@ -121,6 +121,7 @@
           matches: []
         };
       }
+      prefixStart = prefixResult[0].start;
       prefixEnd = prefixResult[0].end;
       patternLength = pattern != null ? pattern.length : (expectedStart != null) && (expectedEnd != null) ? expectedEnd - expectedStart : 64;
       remainingText = this.mapper.corpus.substr(prefixEnd);
@@ -132,18 +133,60 @@
         };
       }
       suffixStart = prefixEnd + suffixResult[0].start;
+      suffixEnd = prefixEnd + suffixResult[0].end;
       charRange = {
         start: prefixEnd,
         end: suffixStart
       };
       matchThreshold = (_ref2 = options.patternMatchThreshold) != null ? _ref2 : 0.5;
       analysis = this.analyzeMatch(pattern, charRange, true);
+      if ((pattern != null) && options.flexContext && !analysis.exact) {
+        if (!this.pm) {
+          this.pm = new window.DTM_ExactMatcher;
+        }
+        this.pm.setDistinct(false);
+        this.pm.setCaseSensitive(false);
+        flexMatches = this.pm.search(this.mapper.corpus.slice(prefixStart, +suffixEnd + 1 || 9e9), pattern);
+        delete candidate;
+        bestError = 2;
+        for (_i = 0, _len = flexMatches.length; _i < _len; _i++) {
+          flexMatch = flexMatches[_i];
+          flexRange = {
+            start: prefixStart + flexMatch.start,
+            end: prefixStart + flexMatch.end
+          };
+          prefixRange = {
+            start: prefixStart,
+            end: flexRange.start
+          };
+          a1 = this.analyzeMatch(prefix, prefixRange, true);
+          prefixError = a1.exact ? 0 : a1.comparison.errorLevel;
+          suffixRange = {
+            start: flexRange.end,
+            end: suffixEnd
+          };
+          a2 = this.analyzeMatch(suffix, suffixRange, true);
+          suffixError = a2.exact ? 0 : a2.comparison.errorLevel;
+          if (a1.exact || a2.exact) {
+            totalError = prefixError + suffixError;
+            if (totalError < bestError) {
+              candidate = flexRange;
+              bestError = totalError;
+            }
+          }
+        }
+        if (candidate != null) {
+          console.log("flexContext adjustment: we found a better candidate!");
+          charRange = candidate;
+          analysis = this.analyzeMatch(pattern, charRange, true);
+        }
+      }
       if ((pattern == null) || analysis.exact || (analysis.comparison.errorLevel <= matchThreshold)) {
-        mappings = this.mapper.getMappingsForCharRange(prefixEnd, suffixStart);
+        mappings = this.mapper.getMappingsForCharRange(charRange.start, charRange.end);
         match = {};
         _ref3 = [charRange, analysis, mappings];
-        for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-          obj = _ref3[_i];
+        for (_j = 0, _len1 = _ref3.length; _j < _len1; _j++) {
+          obj = _ref3[_j];
           for (k in obj) {
             v = obj[k];
             match[k] = v;
