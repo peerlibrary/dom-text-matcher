@@ -235,6 +235,9 @@
         found: found,
         exact: found === expected
       };
+      if (!result.exact) {
+        result.exactExceptCase = expected.toLowerCase() === found.toLowerCase();
+      }
       if (!result.exact && useFuzzy) {
         this.ensureDMP();
         result.comparison = this.dmp.compare(expected, found);
