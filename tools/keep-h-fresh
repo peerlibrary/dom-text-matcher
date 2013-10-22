@@ -3,4 +3,4 @@
 # to the same directory where you keep dom-text-matcher.
 
 cd "$(dirname "$0")"
-watch -n1 "cp -u -t ../../h/h/lib ../src/*.coffee"
+watch -n1 "cp -u -t ../../h/h/lib ../src/*.coffee;cp -u -t ../../h/h/lib ../lib/diff_match_patch/*.js"
