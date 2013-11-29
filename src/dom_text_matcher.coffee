@@ -1,5 +1,8 @@
+# Will be window in a browser, but allows custom loading
+global = this
+
 # Text search library
-class window.DomTextMatcher
+class global.DomTextMatcher
   constructor: (@corpus) ->
 
   # Search for text using exact string matching
@@ -15,7 +18,7 @@ class window.DomTextMatcher
   # For the details about the returned data structure,
   # see the documentation of the search() method.
   searchExact: (pattern, distinct = true, caseSensitive = false) ->
-    if not @pm then @pm = new window.DTM_ExactMatcher
+    if not @pm then @pm = new global.DTM_ExactMatcher
     @pm.setDistinct(distinct)
     @pm.setCaseSensitive(caseSensitive)
     @_search @pm, pattern
@@ -30,7 +33,7 @@ class window.DomTextMatcher
   # For the details about the returned data structure,
   # see the documentation of the search() method.
   searchRegex: (pattern, caseSensitive = false) ->
-    if not @rm then @rm = new window.DTM_RegexMatcher
+    if not @rm then @rm = new global.DTM_RegexMatcher
     @rm.setCaseSensitive(caseSensitive)
     @_search @rm, pattern
 
@@ -134,7 +137,7 @@ class window.DomTextMatcher
     if pattern? and options.flexContext and not analysis.exact
       # Do we have and exact match for the quote around here?
 
-      if not @pm then @pm = new window.DTM_ExactMatcher
+      if not @pm then @pm = new global.DTM_ExactMatcher
       @pm.setDistinct false
       @pm.setCaseSensitive false
 
@@ -273,7 +276,7 @@ class window.DomTextMatcher
 
   ensureDMP: ->
     unless @dmp?
-      unless window.DTM_DMPMatcher?
+      unless global.DTM_DMPMatcher?
         throw new Error "DTM_DMPMatcher is not available.
  Have you loaded the text match engines?"
-      @dmp = new window.DTM_DMPMatcher
+      @dmp = new global.DTM_DMPMatcher

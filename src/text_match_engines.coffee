@@ -1,5 +1,8 @@
-# Naive text matcher 
-class window.DTM_ExactMatcher
+# Will be window in a browser, but allows custom loading
+global = this
+
+# Naive text matcher
+class global.DTM_ExactMatcher
   constructor: ->
     @distinct = true
     @caseSensitive = false  
@@ -32,7 +35,7 @@ class window.DTM_ExactMatcher
 
     results
 
-class window.DTM_RegexMatcher
+class global.DTM_RegexMatcher
   constructor: ->
     @caseSensitive = false  
  
@@ -43,7 +46,7 @@ class window.DTM_RegexMatcher
     { start: m.index, end: m.index + m[0].length } while m = re.exec text
                 
 # diff-match-patch - based text matcher 
-class window.DTM_DMPMatcher
+class global.DTM_DMPMatcher
   constructor: ->
      @dmp = new diff_match_patch
      @dmp.Diff_Timeout = 0
