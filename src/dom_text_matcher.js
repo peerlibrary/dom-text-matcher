@@ -47,7 +47,7 @@
     };
 
     DomTextMatcher.prototype.searchFuzzyWithContext = function(prefix, suffix, pattern, expectedStart, expectedEnd, caseSensitive, options) {
-      var a1, a2, analysis, bestError, candidate, charRange, expectedPrefixStart, expectedSuffixStart, flexMatch, flexMatches, flexRange, k, len, match, matchThreshold, obj, patternLength, prefixEnd, prefixError, prefixRange, prefixResult, prefixStart, remainingText, suffixEnd, suffixError, suffixRange, suffixResult, suffixStart, totalError, v, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3;
+      var a1, a2, analysis, bestError, candidate, charRange, expectedPrefixStart, expectedSuffixStart, flexMatch, flexMatches, flexRange, i, k, len, match, matchThreshold, obj, patternLength, prefixEnd, prefixError, prefixRange, prefixResult, prefixStart, remainingText, suffixEnd, suffixError, suffixRange, suffixResult, suffixStart, totalError, v, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3;
       if (expectedStart == null) {
         expectedStart = null;
       }
@@ -65,7 +65,7 @@
         throw new Error("Can not do a context-based fuzzy search with missing context!");
       }
       len = this.corpus().length;
-      expectedPrefixStart = expectedStart != null ? expectedStart - prefix.length : Math.floor(len / 2);
+      expectedPrefixStart = expectedStart != null ? (i = expectedStart - prefix.length, i < 0 ? 0 : i) : Math.floor(len / 2);
       this.dmp.setMatchDistance((_ref = options.contextMatchDistance) != null ? _ref : len * 2);
       this.dmp.setMatchThreshold((_ref1 = options.contextMatchThreshold) != null ? _ref1 : 0.5);
       prefixResult = this.dmp.search(this.corpus(), prefix, expectedPrefixStart);
