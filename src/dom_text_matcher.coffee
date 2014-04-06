@@ -195,7 +195,7 @@ class window.DomTextMatcher
 
   # Do some normalization to get a "canonical" form of a string.
   # Used to even out some browser differences.  
-  _normalizeString: (string) -> (string.replace /\s{2,}/g, " ").trim()
+  _normalizeString: (string) -> (string.trim().replace /\s+/g, " ")
 
   # Search for text with a custom matcher object
   #
